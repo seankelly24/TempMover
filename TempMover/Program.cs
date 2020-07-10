@@ -60,66 +60,69 @@ namespace ReleaseToSupplier
                 Console.WriteLine("Begin file prep...");
 
                 var forEachCounter = 0;
+                var acceptableFile = false;
 
-                foreach (var file in filteredFiles)
+                var fileExt = "";
+                var subF = "";
+
+                filteredFiles.ForEach(f =>
                 {
                     forEachCounter++;
-                    if (forEachCounter % 1000 == 0)
+                    if (forEachCounter % 500 == 0)
                     {
-                        Console.WriteLine(forEachCounter + " out of " + filteredFiles.Count + " files proceessed.");
+                        Console.WriteLine(forEachCounter + " out of " + filteredFiles.Count + " files proceessed." + DateTime.Now);
                     }
                     try
                     {
-                        var trimmedFileName = Path.GetFileName(file);
-                        var fileExt = "";
+                        var trimmedFileName = Path.GetFileName(f);
                         var prog = trimmedFileName.Substring(0, 4);
-                        var subF = "";
-                        var acceptableFile = false;
-
-                        if (file.ToLower().EndsWith(".stp"))
-                        {
-                            fileExt = ".stp";
-                            subF = "STP";
-                        }
-                        else if (file.ToLower().EndsWith(").stp"))
-                        {
-                            fileExt = ").stp";
-                            subF = "STP";
-                        }
-                        else if (file.ToLower().EndsWith(".dwg"))
-                        {
-                            fileExt = ".dwg";
-                            subF = "DWG";
-                        }
-                        else if (file.ToLower().EndsWith(").dwg"))
-                        {
-                            fileExt = ").dwg";
-                            subF = "DWG";
-                        }
-                        else if (file.ToLower().EndsWith(".pdf"))
-                        {
-                            fileExt = ".pdf";
-                            subF = "PDF";
-                        }
-                        else
-                        {
-                            fileExt = "unknown";
-                        }
 
                         if (prog.ToLower().Contains("vt") || prog.ToLower().Contains("py") || prog.ToLower().Contains("vs"))
                         {
-                            acceptableFile = true;
-                        }
-
-                        if (fileExt != "unknown" && acceptableFile)
-                        {
-                            FileInfo file1 = new FileInfo(path + trimmedFileName);
-                           
-                            if (file1.Exists)
+                            if (f.ToLower().EndsWith(".stp"))
                             {
-                                Directory.CreateDirectory(moveLocation + prog + "\\" + subF + "\\");
-                                File.Copy(path + trimmedFileName, moveLocation + prog + "\\" + subF + "\\" + trimmedFileName, true);
-                                fileCopyCount++;
+                                fileExt = ".stp";
+                                subF = "STP";
+                            }
+                            else if (f.ToLower().EndsWith(").stp"))
+                            {
+                                fileExt = ").stp";
+                                subF = "STP";
+                            }
+                            else if (f.ToLower().EndsWith(".dwg"))
+                            {
+                                fileExt = ".dwg";
+                                subF = "DWG";
+                            }
+                            else if (f.ToLower().EndsWith(").dwg"))
+                            {
+                                fileExt = ").dwg";
+                                subF = "DWG";
+                            }
+                            else if (f.ToLower().EndsWith(".pdf"))
+                            {
+                                fileExt = ".pdf";
+                                subF = "PDF";
+                            }
+                            else
+                            {
+                                fileExt = "unknown";
+                            }
+
+                            if (fileExt != "unknown" && acceptableFile)
+                            {
+                                FileInfo file1 = new FileInfo(path + trimmedFileName);
+
+                                if (file1.Exists)
+                                {
+                                    Directory.CreateDirectory(moveLocation + prog + "\\" + subF + "\\");
+                                    File.Copy(path + trimmedFileName, moveLocation + prog + "\\" + subF + "\\" + trimmedFileName, true);
+                                    fileCopyCount++;
+                                }
+                            }
+                            else
+                            {
+                                fileNotCopiedCount++;
                             }
                         }
                         else
@@ -133,7 +136,85 @@ namespace ReleaseToSupplier
                         Console.WriteLine(errorMessage);
                         fileNotCopiedCount++;
                     }
-                }
+                });
+
+                //foreach (var file in filteredFiles)
+                //{
+                //    forEachCounter++;
+                //    if (forEachCounter % 500 == 0)
+                //    {
+                //        Console.WriteLine(forEachCounter + " out of " + filteredFiles.Count + " files proceessed." + DateTime.Now);
+                //    }
+                //    try
+                //    {
+                //        var trimmedFileName = Path.GetFileName(file);
+                //        var prog = trimmedFileName.Substring(0, 4);
+                        
+                //        if (prog.ToLower().Contains("vt") || prog.ToLower().Contains("py") || prog.ToLower().Contains("vs"))
+                //        {
+                //            var acceptableFile = true;
+
+                //            var fileExt = "";
+                //            var subF = "";
+
+                //            if (file.ToLower().EndsWith(".stp"))
+                //            {
+                //                fileExt = ".stp";
+                //                subF = "STP";
+                //            }
+                //            else if (file.ToLower().EndsWith(").stp"))
+                //            {
+                //                fileExt = ").stp";
+                //                subF = "STP";
+                //            }
+                //            else if (file.ToLower().EndsWith(".dwg"))
+                //            {
+                //                fileExt = ".dwg";
+                //                subF = "DWG";
+                //            }
+                //            else if (file.ToLower().EndsWith(").dwg"))
+                //            {
+                //                fileExt = ").dwg";
+                //                subF = "DWG";
+                //            }
+                //            else if (file.ToLower().EndsWith(".pdf"))
+                //            {
+                //                fileExt = ".pdf";
+                //                subF = "PDF";
+                //            }
+                //            else
+                //            {
+                //                fileExt = "unknown";
+                //            }
+
+                //            if (fileExt != "unknown" && acceptableFile)
+                //            {
+                //                FileInfo file1 = new FileInfo(path + trimmedFileName);
+
+                //                if (file1.Exists)
+                //                {
+                //                    Directory.CreateDirectory(moveLocation + prog + "\\" + subF + "\\");
+                //                    File.Copy(path + trimmedFileName, moveLocation + prog + "\\" + subF + "\\" + trimmedFileName, true);
+                //                    fileCopyCount++;
+                //                }
+                //            }
+                //            else
+                //            {
+                //                fileNotCopiedCount++;
+                //            }
+                //        }
+                //        else
+                //        {
+                //            fileNotCopiedCount++;
+                //        }
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        var errorMessage = "Move File Failed. See Error Excepetion: " + ex.Message + ".";
+                //        Console.WriteLine(errorMessage);
+                //        fileNotCopiedCount++;
+                //    }
+                //}
 
                 SendMail("Successfully completed SMTP copy job at " + DateTime.Now + " - From Report01 task scheduler ReleasedFolderCopy. ", "Files Copied: " + fileCopyCount + ". Errors: " + fileNotCopiedCount +  ".");
             }
